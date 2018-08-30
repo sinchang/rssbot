@@ -1,0 +1,17 @@
+CREATE TABLE `user` (
+	`id`	INTEGER NOT NULL UNIQUE,
+	`name`	TEXT NOT NULL,
+	`rss_id`	INTEGER NOT NULL,
+	`created_date`	DATE NOT NULL,
+	`updated_date`	DATE,
+	PRIMARY KEY(`id`)
+);
+
+CREATE TABLE `rss` (
+	`title`	TEXT NOT NULL,
+	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`url`	TEXT NOT NULL,
+	`created_date`	DATE NOT NULL,
+	`updated_date`	DATE,
+	`latest_guid`	TEXT NOT NULL
+);
