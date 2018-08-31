@@ -15,3 +15,9 @@ CREATE TABLE `rss` (
 	`updated_date`	DATE,
 	`latest_guid`	TEXT NOT NULL
 );
+
+CREATE TABLE `subscription` (
+	`rss_id`	INTEGER NOT NULL,
+	`user_id`	INTEGER NOT NULL,
+	`created_date`	DATE NOT NULL
+);

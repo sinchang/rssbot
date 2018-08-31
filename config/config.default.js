@@ -13,5 +13,7 @@ module.exports = appInfo => {
     database: 'rssbot.db',
   };
 
+  config.TELEGRAM_BOT_TOKEN = '412096935:AAGEPdzS-oQh6dCpaJ3qw_cyrYiu2OGujvw';
+
   return config;
 };
