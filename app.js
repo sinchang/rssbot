@@ -10,5 +10,5 @@ module.exports = app => {
 
   app.bot = new TelegramBot(token, { polling: true });
 
-  new Telegram(app);
+  app.telegram = new Telegram(app);
 };

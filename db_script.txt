@@ -1,7 +1,6 @@
 CREATE TABLE `user` (
 	`id`	INTEGER NOT NULL UNIQUE,
 	`name`	TEXT NOT NULL,
-	`rss_id`	INTEGER NOT NULL,
 	`created_date`	DATE NOT NULL,
 	`updated_date`	DATE,
 	PRIMARY KEY(`id`)

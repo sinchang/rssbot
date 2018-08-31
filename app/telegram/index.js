@@ -44,7 +44,8 @@ class Telegram {
     }
 
     if (!isExistRss) {
-      const res = await this.rssService.create(feed.title, rssUrl, feed.items[0].guid);
+      await this.rssService.create(feed.title, rssUrl, feed.items[0].guid);
+      const res = await this.rssService.findByUrl(rssUrl);
       rssId = res.id;
     } else {
       rssId = isExistRss.id;
@@ -116,6 +117,27 @@ class Telegram {
       res += `[${item.title}](${item.url})\n`;
     });
     return res;
+  }
+
+  async check() {
+    const rssData = await this.rssService.index();
+
+    if (!rssData || rssData.length === 0) return;
+
+    rssData.forEach(async (item, index) => {
+      const feed = await parser.parseURL(item.url);
+      const lasestGuid = feed.items[0].guid;
+      if (item.lasest_guid === lasestGuid) {
+        if (index === 0) return;
+        await this.rssService.update(item.id, lasestGuid);
+        const subscription = await this.subscriptionService.findByRssId(item.id);
+        subscription.forEach(item => {
+          for (let i = 0; i < index; i++) {
+            this.bot.sendMessage(item.id, feed.items[i].url);
+          }
+        });
+      }
+    });
   }
 }
 
