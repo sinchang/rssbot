@@ -124,16 +124,16 @@ class Telegram {
 
     if (!rssData || rssData.length === 0) return;
 
-    rssData.forEach(async (item, index) => {
-      const feed = await parser.parseURL(item.url);
+    rssData.forEach(async (rss, index) => {
+      const feed = await parser.parseURL(rss.url);
       const latestGuid = feed.items[0].guid;
-      if (item.latest_guid === latestGuid) {
+      if (rss.latest_guid === latestGuid) {
         if (index === 0) return;
-        await this.rssService.update(item.id, latestGuid);
-        const subscription = await this.subscriptionService.findByRssId(item.id);
+        await this.rssService.update(rss.id, latestGuid);
+        const subscription = await this.subscriptionService.findByRssId(rss.id);
         subscription.forEach(item => {
           for (let i = 0; i < index; i++) {
-            this.bot.sendMessage(item.id, feed.items[i].url);
+            this.bot.sendMessage(item.user_id, feed.items[i].url);
           }
         });
       }
