@@ -126,10 +126,10 @@ class Telegram {
 
     rssData.forEach(async (item, index) => {
       const feed = await parser.parseURL(item.url);
-      const lasestGuid = feed.items[0].guid;
-      if (item.lasest_guid === lasestGuid) {
+      const latestGuid = feed.items[0].guid;
+      if (item.latest_guid === latestGuid) {
         if (index === 0) return;
-        await this.rssService.update(item.id, lasestGuid);
+        await this.rssService.update(item.id, latestGuid);
         const subscription = await this.subscriptionService.findByRssId(item.id);
         subscription.forEach(item => {
           for (let i = 0; i < index; i++) {
