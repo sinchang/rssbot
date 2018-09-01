@@ -124,18 +124,23 @@ class Telegram {
 
     if (!rssData || rssData.length === 0) return;
 
-    rssData.forEach(async (rss, index) => {
-      const feed = await parser.parseURL(rss.url);
-      const latestGuid = feed.items[0].guid;
-      if (rss.latest_guid === latestGuid) {
-        if (index === 0) return;
-        await this.rssService.update(rss.id, latestGuid);
-        const subscription = await this.subscriptionService.findByRssId(rss.id);
-        subscription.forEach(item => {
-          for (let i = 0; i < index; i++) {
-            this.bot.sendMessage(item.user_id, feed.items[i].link);
-          }
-        });
+    rssData.forEach(async rss => {
+      const { items } = await parser.parseURL(rss.url);
+      const latestGuid = rss.latest_guid;
+
+      for (let index = 0; index < items.length; index++) {
+        const element = items[index];
+        if (element.guid === latestGuid) {
+          if (index === 0) return;
+          await this.rssService.update(rss.id, items[0].guid);
+          const subscription = await this.subscriptionService.findByRssId(rss.id);
+          // eslint-disable-next-line no-loop-func
+          subscription.forEach(userRow => {
+            [ ...Array(index).keys() ].forEach(i => {
+              this.bot.sendMessage(userRow.user_id, items[i].link);
+            });
+          });
+        }
       }
     });
   }
