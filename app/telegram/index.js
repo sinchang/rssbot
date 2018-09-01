@@ -133,7 +133,7 @@ class Telegram {
         const subscription = await this.subscriptionService.findByRssId(rss.id);
         subscription.forEach(item => {
           for (let i = 0; i < index; i++) {
-            this.bot.sendMessage(item.user_id, feed.items[i].url);
+            this.bot.sendMessage(item.user_id, feed.items[i].link);
           }
         });
       }
