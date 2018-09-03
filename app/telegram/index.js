@@ -5,9 +5,11 @@ const parser = new Parser();
 const UserService = require('../service/user');
 const RssService = require('../service/rss');
 const SubscriptionService = require('../service/subscription');
+const parseOpml = require('node-opml-parser');
 
 class Telegram {
   constructor(app) {
+    this.app = app;
     this.bot = app.bot;
     this.userService = new UserService(app);
     this.rssService = new RssService(app);
@@ -16,6 +18,39 @@ class Telegram {
   }
 
   init() {
+    this.bot.on('message', async msg => {
+      if (msg.document && msg.document.mime_type === 'text/x-opml+xml') {
+        const readStream = await this.bot.getFileStream(msg.document.file_id);
+        const chunks = [];
+
+        readStream.on('data', chunk => {
+          chunks.push(chunk);
+        });
+
+        readStream.on('end', () => {
+          const data = Buffer.concat(chunks).toString();
+          parseOpml(data, (err, items) => {
+            if (err) {
+              this.bot.sendMessage(msg.chat.id, 'Failed');
+              return;
+            }
+
+            if (items.length === 0) {
+              this.bot.sendMessage(msg.chat.id, 'Empty');
+              return;
+            }
+
+            items.forEach(async item => {
+              msg.text = item.feedUrl;
+              await this.sub(msg);
+            });
+
+            this.bot.sendMessage(msg.chat.id, 'Imported');
+          });
+        });
+      }
+    });
+
     this.bot.onText(/\/sub/, async msg => {
       const res = await this.sub(msg);
       this.bot.sendMessage(msg.chat.id, res);
@@ -33,7 +68,8 @@ class Telegram {
   }
 
   async sub(msg) {
-    const rssUrl = msg.text.split(' ')[1];
+    const rssUrlArray = msg.text.split(' ');
+    const rssUrl = rssUrlArray.length > 1 ? rssUrlArray[1] : rssUrlArray[0];
     const feed = await parser.parseURL(rssUrl);
     const userId = msg.chat.id;
     const isExistUser = await this.userService.show(msg.chat.id);
@@ -55,9 +91,9 @@ class Telegram {
 
     if (!isSubed) {
       await this.subscriptionService.create(userId, rssId);
-      return 'Succeed';
+      return 'Subscribed';
     }
-    return 'Subscribed';
+    return 'Already Subscribed';
   }
 
   async unsub(msg) {
