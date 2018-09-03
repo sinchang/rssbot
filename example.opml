@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<opml version="1.0">
+    <head>
+        <title>example opml file</title>
+    </head>
+    <body>
+        <outline text="F2E" title="F2E">
+            <outline type="rss" text="每日环球展览" title="每日环球展览" xmlUrl="https://rsshub.app/imuseum/beijing/latest" htmlUrl="https://rsshub.app"/>
+        </outline>
+    </body>
+</opml>
