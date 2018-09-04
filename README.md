@@ -4,13 +4,13 @@ a rss bot for telegram
 
 ## Command
 
-- /sub <rss url>: Subscribe
+- `/sub <rss url>` Subscribe
 
-- /unsub <rss url>: Unsubscribe
+- `/unsub <rss url>` Unsubscribe
 
-- /list: List all rss.
+- `/list` List all rss
 
-- /export: Export all rss as opml text.
+- `/export` Export all rss as opml text
 
 ## Tip
 
