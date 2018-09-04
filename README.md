@@ -2,6 +2,16 @@
 
 a rss bot for telegram
 
+## Command
+
+- /sub <rss url>: Subscribe
+
+- /unsub <rss url>: Unsubscribe
+
+- /list: List all rss.
+
+- /export: Export all rss as opml text.
+
 ## Tip
 
 send opml file to bot we will auto import and subscribed.
