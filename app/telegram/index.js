@@ -61,9 +61,22 @@ class Telegram {
       this.bot.sendMessage(msg.chat.id, res);
     });
 
+    this.bot.onText(/\/export/, async msg => {
+      const res = await this.export(msg);
+      this.bot.sendMessage(msg.chat.id, res);
+    });
+
     this.bot.onText(/\/list/, async msg => {
       const res = await this.list(msg);
-      this.bot.sendMessage(msg.chat.id, res, { parse_mode: 'Markdown' });
+      let str = '';
+      if (Array.isArray(res)) {
+        res.forEach(item => {
+          str += `[${item.title}](${item.url})\n`;
+        });
+      } else {
+        str = res;
+      }
+      this.bot.sendMessage(msg.chat.id, str, { parse_mode: 'Markdown' });
     });
   }
 
@@ -148,11 +161,7 @@ class Telegram {
       return 'Empty';
     }
 
-    let res = '';
-    rssData.forEach(item => {
-      res += `[${item.title}](${item.url})\n`;
-    });
-    return res;
+    return rssData;
   }
 
   async check() {
@@ -179,6 +188,28 @@ class Telegram {
         }
       }
     });
+  }
+
+  async export(msg) {
+    const list = await this.list(msg);
+    let opmlData = `
+    <?xml version="1.0" encoding="UTF-8"?>
+    <opml version="1.0">
+        <head>
+            <title>subscriptions</title>
+        </head>
+        <body>
+    `;
+
+    list.forEach(item => {
+      opmlData += `<outline type="rss" text="${item.title}" title="${item.title}" xmlUrl="${item.url}" htmlUrl="${item.url}"/>`;
+    });
+
+    opmlData += `
+      </body>
+    </opml>`;
+
+    return opmlData;
   }
 }
 
