@@ -1,6 +1,6 @@
 # rssbot
 
-a rss bot for telegram
+a rss bot for telegram [@NodeRssBot](http://t.me/NodeRssBot)
 
 ## Command
 
