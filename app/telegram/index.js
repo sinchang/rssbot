@@ -1,5 +1,7 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
 const Parser = require('rss-parser');
 const parser = new Parser();
 const UserService = require('../service/user');
@@ -62,8 +64,20 @@ class Telegram {
     });
 
     this.bot.onText(/\/export/, async msg => {
+      const userId = msg.chat.id;
       const res = await this.export(msg);
-      this.bot.sendMessage(msg.chat.id, res);
+      const filepath = path.resolve(`opml/${userId}.opml`);
+
+      fs.writeFileSync(filepath, res);
+
+      const fileOptions = {
+        // Explicitly specify the file name.
+        filename: `${userId}.opml`,
+        // Explicitly specify the MIME type.
+        contentType: 'text/x-opml+xml',
+      };
+
+      this.bot.sendDocument(userId, filepath, {}, fileOptions);
     });
 
     this.bot.onText(/\/list/, async msg => {

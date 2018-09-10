@@ -12,3 +12,4 @@ run/
 *.un~
 rssbot.db
 config.local.js
+*.opml
