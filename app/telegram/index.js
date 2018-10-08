@@ -107,7 +107,7 @@ class Telegram {
     }
 
     if (!isExistRss) {
-      await this.rssService.create(feed.title, rssUrl, feed.items[0].guid);
+      await this.rssService.create(feed.title, rssUrl, feed.items[0].guid || feed.items[0].id);
       const res = await this.rssService.findByUrl(rssUrl);
       rssId = res.id;
     } else {
