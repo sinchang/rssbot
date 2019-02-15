@@ -189,9 +189,9 @@ class Telegram {
 
       for (let index = 0; index < items.length; index++) {
         const element = items[index];
-        if (element.guid === latestGuid) {
+        if ((element.guid || element.id) === latestGuid) {
           if (index === 0) return;
-          await this.rssService.update(rss.id, items[0].guid);
+          await this.rssService.update(rss.id, items[0].guid || items[0].id);
           const subscription = await this.subscriptionService.findByRssId(rss.id);
           // eslint-disable-next-line no-loop-func
           subscription.forEach(userRow => {
